@@ -1,17 +1,24 @@
 import pygame
 import random
+
+import sys
+
 pygame.init()
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
+# Загружаем звуковые эффекты
+shoot_sound = pygame.mixer.Sound("sounds/shut.wav")
+explosion_sound = pygame.mixer.Sound("sounds/explosion.wav")
+
 pygame.display.set_caption("Игра Тир")
 icon = pygame.image.load("img/Shuter.jpg")
 pygame.display.set_icon(icon)
 
 target_img = pygame.image.load("img/Target.png")
-explosion_img = pygame.image.load("img/Explosion.jpg")  # Загрузка изображения взрыва
+explosion_img = pygame.image.load("img/explosion.png")  # Загрузка изображения взрыва
 target_width = 80
 target_height = 80
 
@@ -33,12 +40,17 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
+
+            shoot_sound.play(
+                maxtime=1000)  # Воспроизвести звук выстрела, maxtime ограничивает воспроизведение 1000 мс
             mouse_x, mouse_y = pygame.mouse.get_pos()
             if target_x < mouse_x < target_x + target_width and target_y < mouse_y < target_y + target_height:
                 score += 1
                 screen.blit(explosion_img, (target_x, target_y))  # Отображение взрыва при попадании
+                explosion_sound.play(maxtime=2000)
                 pygame.display.update()
-                pygame.time.wait(300)  # Задержка для отображения взрыва
+                pygame.time.wait(2000)  # Задержка для отображения взрыва
+
                 # Перемещение цели в новое местоположение
                 target_x = random.randint(0, SCREEN_WIDTH - target_width)
                 target_y = random.randint(0, SCREEN_HEIGHT - target_height)
