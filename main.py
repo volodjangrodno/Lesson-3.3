@@ -18,7 +18,7 @@ icon = pygame.image.load("img/Shuter.jpg")
 pygame.display.set_icon(icon)
 
 target_img = pygame.image.load("img/Target.png")
-explosion_img = pygame.image.load("img/explosion.png")  # Загрузка изображения взрыва
+explosion_img = pygame.image.load("img/explosion3.png")  # Загрузка изображения взрыва
 target_width = 80
 target_height = 80
 
@@ -33,12 +33,20 @@ font = pygame.font.Font(None, 36)
 target_speed_x = random.randint(-1, 1)
 target_speed_y = random.randint(-1, 1)
 
+# Отключаем видимость стандартного курсора мыши
+pygame.mouse.set_visible(False)
+
+# Загружаем изображение прицела и получаем его прямоугольник
+crosshair_image = pygame.image.load("img/pricel.png").convert_alpha()
+crosshair_rect = crosshair_image.get_rect()
+
 running = True
 while running:
     screen.fill(color)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
         if event.type == pygame.MOUSEBUTTONDOWN:
 
             shoot_sound.play(
@@ -73,6 +81,15 @@ while running:
     # Отображение счета
     score_text = font.render(f"Score: {score}", True, (255, 255, 255))
     screen.blit(score_text, (10, 10))
+
+    # Получаем текущее положение мыши
+    mouse_pos = pygame.mouse.get_pos()
+
+    # Позиционируем прицел на курсоре
+    crosshair_rect.center = mouse_pos
+
+    # Рисуем изображение прицела на его новом местоположении
+    screen.blit(crosshair_image, crosshair_rect)
 
     pygame.display.update()
 
